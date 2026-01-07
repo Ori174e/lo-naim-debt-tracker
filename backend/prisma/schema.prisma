@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Notification preferences
+  pushEnabled  Boolean @default(true)
+  emailEnabled Boolean @default(true)
+  smsEnabled   Boolean @default(false)
+
+  // Firebase/Clerk auth ID
+  authId String @unique
+
+  // Push notification tokens
+  pushTokens PushToken[]
+
+  // Relationships
+  debtsAsLender    Debt[]       @relation("Lender")
+  debtsAsBorrower  Debt[]       @relation("Borrower")
+  friendships1     Friendship[] @relation("User1")
+  friendships2     Friendship[] @relation("User2")
+  sentNotifications Notification[] @relation("Sender")
+  receivedNotifications Notification[] @relation("Recipient")
+  payments         Payment[]
+
+  @@index([email])
+  @@index([authId])
+}
+
+model PushToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  platform  String   // 'web', 'ios', 'android'
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user1 User @relation("User1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2 User @relation("User2", fields: [user2Id], references: [id], onDelete: Cascade)
+
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+model Debt {
+  id              String   @id @default(cuid())
+  lenderId        String
+  borrowerId      String
+  originalAmount  Decimal  @db.Decimal(10, 2)
+  remainingAmount Decimal  @db.Decimal(10, 2)
+  currency        String   @default("USD")
+  description     String?
+  status          DebtStatus @default(ACTIVE)
+  dueDate         DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  settledAt       DateTime?
+
+  lender   User @relation("Lender", fields: [lenderId], references: [id], onDelete: Cascade)
+  borrower User @relation("Borrower", fields: [borrowerId], references: [id], onDelete: Cascade)
+
+  payments      Payment[]
+  notifications Notification[]
+
+  @@index([lenderId])
+  @@index([borrowerId])
+  @@index([status])
+}
+
+enum DebtStatus {
+  ACTIVE
+  SETTLED
+  DISPUTED
+  CANCELLED
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  debtId      String
+  amount      Decimal  @db.Decimal(10, 2)
+  paymentDate DateTime @default(now())
+  note        String?
+  recordedBy  String   // User ID who recorded the payment
+
+  debt        Debt @relation(fields: [debtId], references: [id], onDelete: Cascade)
+  recorder    User @relation(fields: [recordedBy], references: [id])
+
+  @@index([debtId])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  type        NotificationType
+  debtId      String?
+  senderId    String?
+  recipientId String
+  title       String
+  message     String
+  sentAt      DateTime @default(now())
+  openedAt    DateTime?
+  status      NotificationStatus @default(PENDING)
+
+  debt      Debt? @relation(fields: [debtId], references: [id], onDelete: Cascade)
+  sender    User? @relation("Sender", fields: [senderId], references: [id])
+  recipient User  @relation("Recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId])
+  @@index([debtId])
+  @@index([status])
+}
+
+enum NotificationType {
+  DEBT_CREATED
+  PAYMENT_REMINDER
+  PAYMENT_RECEIVED
+  DEBT_SETTLED
+  FRIEND_REQUEST
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  DELIVERED
+  FAILED
+}
