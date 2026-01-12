@@ -39,7 +39,7 @@ export class FriendController {
 
     async respondToRequest(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params
+            const { id } = req.params as { id: string }
             const { status } = req.body // EXPECTS { status: 'ACCEPTED' | 'REJECTED' }
 
             if (status !== 'ACCEPTED' && status !== 'REJECTED') {
@@ -56,7 +56,7 @@ export class FriendController {
 
     async removeFriend(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params // This is the FRIEND'S user ID, not the friendship ID for convenience
+            const { id } = req.params as { id: string } // This is the FRIEND'S user ID, not the friendship ID for convenience
             const result = await friendService.removeFriend(req.userId!, id)
             res.json(result)
         } catch (error) {

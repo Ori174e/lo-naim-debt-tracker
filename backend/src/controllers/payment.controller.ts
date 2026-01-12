@@ -16,7 +16,8 @@ export class PaymentController {
 
     async getPaymentsByDebt(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const payments = await paymentService.getPaymentsByDebt(req.params.debtId, req.userId!)
+            const { debtId } = req.params as { debtId: string }
+            const payments = await paymentService.getPaymentsByDebt(debtId, req.userId!)
             res.status(200).json(payments)
         } catch (error) {
             next(error)
@@ -25,7 +26,8 @@ export class PaymentController {
 
     async settleDebt(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const result = await paymentService.settleDebt(req.params.id, req.userId!)
+            const { id } = req.params as { id: string }
+            const result = await paymentService.settleDebt(id, req.userId!)
             res.status(200).json(result)
         } catch (error) {
             next(error)
