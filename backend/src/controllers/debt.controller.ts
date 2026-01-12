@@ -25,7 +25,8 @@ export class DebtController {
 
     async getDebtById(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const debt = await debtService.getDebtById(req.params.id, req.userId!)
+            const { id } = req.params as { id: string }
+            const debt = await debtService.getDebtById(id, req.userId!)
             res.status(200).json(debt)
         } catch (error) {
             next(error)
@@ -35,7 +36,8 @@ export class DebtController {
     async updateDebt(req: AuthRequest, res: Response, next: NextFunction) {
         try {
             const validatedData = updateDebtSchema.parse(req.body)
-            const debt = await debtService.updateDebt(req.params.id, req.userId!, validatedData)
+            const { id } = req.params as { id: string }
+            const debt = await debtService.updateDebt(id, req.userId!, validatedData)
             res.status(200).json(debt)
         } catch (error) {
             next(error)
