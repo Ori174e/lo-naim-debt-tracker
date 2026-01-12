@@ -4,7 +4,7 @@ import { friendService } from '../../services/friend.service'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
 import Modal from '../ui/Modal'
-import { UserMinus, MessageSquare } from 'lucide-react'
+import { UserMinus } from 'lucide-react'
 
 interface FriendListProps {
     friends: User[]

@@ -24,7 +24,6 @@ export default function DebtDetails({ debt, onUpdate }: DebtDetailsProps) {
     const [isSettling, setIsSettling] = useState(false)
 
     const isLender = debt.lenderId === user?.id
-    const isBorrower = debt.borrowerId === user?.id
     const otherPerson = isLender ? debt.borrower : debt.lender
     const canRecordPayment = debt.status === 'ACTIVE' && debt.remainingAmount > 0
     const paymentProgress = ((Number(debt.originalAmount) - Number(debt.remainingAmount)) / Number(debt.originalAmount)) * 100

@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react'
-import { motion } from 'framer-motion'
+
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'danger' | 'success'
+    variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'ghost' | 'outline'
     size?: 'sm' | 'md' | 'lg'
     isLoading?: boolean
     children: ReactNode
@@ -24,6 +24,8 @@ export default function Button({
         secondary: 'btn-secondary',
         danger: 'btn-danger',
         success: 'btn-success',
+        ghost: 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800',
+        outline: 'border border-slate-700 text-slate-300 hover:bg-slate-800',
     }
 
     const sizeClasses = {
@@ -33,20 +35,19 @@ export default function Button({
     }
 
     return (
-        <motion.button
-            whileTap={{ scale: disabled ? 1 : 0.95 }}
+        <button
             className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
             disabled={disabled || isLoading}
             {...props}
         >
             {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-current"></div>
                     <span>Loading...</span>
                 </div>
             ) : (
                 children
             )}
-        </motion.button>
+        </button>
     )
 }

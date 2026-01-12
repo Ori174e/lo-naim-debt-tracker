@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { User, LoginCredentials, SignupData, AuthTokens } from '../types/user.types'
+import { User, LoginCredentials, SignupData } from '../types/user.types'
 import { authService } from '../services/auth.service'
 
 interface AuthState {

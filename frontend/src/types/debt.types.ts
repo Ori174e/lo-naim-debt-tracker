@@ -43,7 +43,8 @@ export interface Payment {
 }
 
 export interface CreateDebtData {
-    borrowerId: string
+    borrowerId?: string
+    borrowerEmail?: string
     originalAmount: number
     currency?: string
     description?: string

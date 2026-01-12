@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useDebtStore } from '../store/debtStore'
-import { Plus, Filter, Search, Receipt } from 'lucide-react'
+import { Plus, Search, Receipt } from 'lucide-react'
 import Header from '../components/layout/Header'
 import DebtList from '../components/debts/DebtList'
 import CreateDebtForm from '../components/debts/CreateDebtForm'
@@ -11,7 +10,7 @@ import Input from '../components/ui/Input'
 import EmptyState from '../components/ui/EmptyState'
 
 export default function DebtsPage() {
-    const { fetchDebts, isLoading, debtsAsLender, debtsAsBorrower } = useDebtStore()
+    const { fetchDebts, isLoading, asLender: debtsAsLender, asBorrower: debtsAsBorrower } = useDebtStore()
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
 

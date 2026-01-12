@@ -4,11 +4,9 @@ import { formatRelativeTime } from '../../utils/formatDate'
 import { NotificationType } from '../../types/notification.types'
 import { Bell, DollarSign, UserPlus, CheckCircle, CreditCard } from 'lucide-react'
 
-interface NotificationListProps {
-    onClose?: () => void
-}
 
-export default function NotificationList({ onClose }: NotificationListProps) {
+
+export default function NotificationList() {
     const { notifications, isLoading, markAsRead, markAllAsRead, fetchNotifications } = useNotificationStore()
     const listRef = useRef<HTMLDivElement>(null)
 
@@ -16,10 +14,7 @@ export default function NotificationList({ onClose }: NotificationListProps) {
         fetchNotifications()
     }, [])
 
-    const handleMarkAsRead = async (e: React.MouseEvent, id: string) => {
-        e.stopPropagation()
-        await markAsRead(id)
-    }
+
 
     const getIcon = (type: NotificationType) => {
         switch (type) {

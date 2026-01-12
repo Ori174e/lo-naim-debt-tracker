@@ -55,7 +55,7 @@ export default function NotificationBell() {
 
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-80 sm:w-96 z-50 origin-top-right">
-                    <NotificationList onClose={() => setIsOpen(false)} />
+                    <NotificationList />
                 </div>
             )}
         </div>

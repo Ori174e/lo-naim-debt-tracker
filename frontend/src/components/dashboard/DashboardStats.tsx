@@ -1,6 +1,6 @@
-import { ArrowDownLeft, ArrowUpRight, DollarSign, Wallet } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, Wallet } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Debt } from '../../services/debt.service'
+import { Debt } from '../../types/debt.types'
 
 interface DashboardStatsProps {
     debtsAsLender: Debt[]

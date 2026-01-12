@@ -1,4 +1,3 @@
-```typescript
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import Button from '../ui/Button'
@@ -28,7 +27,7 @@ export default function Header() {
 
                 <div className="flex items-center gap-4">
                     <NotificationBell />
-                    
+
                     <div className="hidden md:flex items-center gap-3 pl-4 border-l border-slate-800">
                         <div className="text-right">
                             <p className="text-sm font-medium text-slate-200">{user?.name}</p>
@@ -41,9 +40,9 @@ export default function Header() {
                                 <User className="w-5 h-5 text-slate-400" />
                             )}
                         </div>
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={handleLogout}
                             className="text-slate-400 hover:text-danger-400"
                         >

@@ -8,7 +8,7 @@ import {
     ResponsiveContainer,
     Cell
 } from 'recharts'
-import { Debt } from '../../services/debt.service'
+import { Debt } from '../../types/debt.types'
 
 interface DebtChartProps {
     debtsAsLender: Debt[]

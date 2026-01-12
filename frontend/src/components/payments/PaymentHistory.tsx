@@ -4,7 +4,7 @@ import { formatDate, formatRelativeTime } from '../../utils/formatDate'
 import { formatCurrency } from '../../utils/formatCurrency'
 import Card from '../ui/Card'
 import LoadingSpinner from '../ui/LoadingSpinner'
-import { DollarSign, User, Calendar } from 'lucide-react'
+import { DollarSign, User } from 'lucide-react'
 import { useEffect } from 'react'
 
 interface PaymentHistoryProps {

@@ -13,7 +13,7 @@ interface NotificationState {
     addNotification: (notification: UserNotification) => void // For real-time updates later
 }
 
-export const useNotificationStore = create<NotificationState>((set, get) => ({
+export const useNotificationStore = create<NotificationState>((set) => ({
     notifications: [],
     unreadCount: 0,
     isLoading: false,
