@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Plus } from 'lucide-react'
+import { Plus, UserPlus } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useDebtStore } from '../store/debtStore'
 import Header from '../components/layout/Header'
@@ -9,11 +9,14 @@ import DashboardStats from '../components/dashboard/DashboardStats'
 import DebtChart from '../components/dashboard/DebtChart'
 import EmptyState from '../components/ui/EmptyState'
 import Button from '../components/ui/Button'
+import Modal from '../components/ui/Modal'
+import SearchFriend from '../components/friends/SearchFriend'
 
 export default function DashboardPage() {
     const { user } = useAuthStore()
     const { asLender: debtsAsLender, asBorrower: debtsAsBorrower, fetchDebts, isLoading } = useDebtStore()
     const navigate = useNavigate()
+    const [isAddFriendOpen, setIsAddFriendOpen] = useState(false)
 
     useEffect(() => {
         fetchDebts()
@@ -58,11 +61,15 @@ export default function DashboardPage() {
                                 {/* Quick Actions */}
                                 <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
                                     <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
-                                    <div className="flex gap-4">
+                                    <div className="flex flex-wrap justify-center gap-4">
                                         <Button onClick={() => navigate('/debts')}>
                                             View All Debts
                                         </Button>
-                                        <Button variant="secondary" onClick={() => navigate('/friends')}>
+                                        <Button variant="secondary" onClick={() => setIsAddFriendOpen(true)}>
+                                            <UserPlus className="w-4 h-4 mr-2" />
+                                            Add Friend
+                                        </Button>
+                                        <Button variant="ghost" onClick={() => navigate('/friends')}>
                                             Manage Friends
                                         </Button>
                                     </div>
@@ -80,6 +87,21 @@ export default function DashboardPage() {
                     </>
                 )}
             </main>
+
+            <Modal
+                isOpen={isAddFriendOpen}
+                onClose={() => setIsAddFriendOpen(false)}
+                title="Add a New Friend"
+            >
+                <div className="space-y-6">
+                    <p className="text-slate-400 text-sm">
+                        Search for a user by email/name/phone to send a friend request.
+                    </p>
+                    <SearchFriend onFriendAdded={() => {
+                        setIsAddFriendOpen(false)
+                    }} />
+                </div>
+            </Modal>
         </div>
     )
 }

@@ -6,7 +6,7 @@ import SearchFriend from '../components/friends/SearchFriend'
 import FriendRequestList from '../components/friends/FriendRequestList'
 import { useFriendStore } from '../store/friendStore'
 import LoadingSpinner from '../components/ui/LoadingSpinner'
-import { Plus } from 'lucide-react'
+import { UserPlus } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Modal from '../components/ui/Modal'
 
@@ -33,7 +33,7 @@ export default function FriendsPage() {
                 <div className="flex items-center justify-between mb-8">
                     <h1 className="text-3xl font-display font-bold text-white">Friends</h1>
                     <Button onClick={() => setIsAddOpen(true)}>
-                        <Plus className="w-5 h-5 mr-2" />
+                        <UserPlus className="w-5 h-5 mr-2" />
                         Add Friend
                     </Button>
                 </div>
