@@ -1,4 +1,5 @@
-import express, { Express, Request, Response, NextFunction } from 'express'
+import express, { Express, Request, Response } from 'express'
+import cors from 'cors'
 
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes'
@@ -16,23 +17,19 @@ const app: Express = express()
 
 // CORS - Emergency configuration
 // CORS - Emergency configuration (Manual Headers)
-// CORS - Emergency configuration (Mirror Strategy)
-app.use((req: Request, res: Response, next: NextFunction) => {
-    // mirror the request origin, or fall back to the vercel app
-    const origin = req.headers.origin || "https://lo-naim-debt-tracker.vercel.app";
-
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-
-    // Handle Preflight immediately
-    if (req.method === "OPTIONS") {
-        res.status(200).end();
-        return;
-    }
+// Debug Logging for CORS
+app.use((req, _res, next) => {
+    console.log(`[CORS DEBUG] Method: ${req.method}, Origin: ${req.headers.origin}`);
     next();
 });
+
+// CORS - Emergency configuration
+app.use(cors({
+    origin: true, // This automatically mirrors the request origin
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 // Security Middleware
 app.use(helmet())
