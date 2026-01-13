@@ -23,6 +23,7 @@ model User {
 
   // Firebase/Clerk auth ID
   authId String @unique
+  password String?
 
   // Push notification tokens
   pushTokens PushToken[]

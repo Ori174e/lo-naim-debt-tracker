@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 import { AppError } from '../middleware/errorHandler.middleware'
-import { SignupInput, LoginInput, UpdateProfileInput, UpdatePreferencesInput } from '../validators/user.validator'
+import { SignupInput, LoginInput, UpdateProfileInput, UpdatePreferencesInput, UpdatePasswordInput, UpdateEmailInput } from '../validators/user.validator'
 
 const prisma = new PrismaClient()
 
@@ -17,7 +18,7 @@ export class AuthService {
         }
 
         // Hash password
-        // const hashedPassword = await bcrypt.hash(data.password, 10) // Removed as it's unused
+        const hashedPassword = await bcrypt.hash(data.password, 10)
 
         // Create user with a unique authId (since we're not using Firebase)
         const user = await prisma.user.create({
@@ -26,29 +27,15 @@ export class AuthService {
                 name: data.name,
                 phone: data.phone,
                 authId: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                password: hashedPassword,
             },
         })
-
-        // Store hashed password in a separate table or use authId field creatively
-        // For simplicity in this demo, we'll store it in Redis or handle it differently
-        // For now, let's add a password field to the User model later if needed
 
         // Generate JWT token
         const token = this.generateToken(user.id)
 
         return {
-            user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                phone: user.phone,
-                avatarUrl: user.avatarUrl,
-                pushEnabled: user.pushEnabled,
-                emailEnabled: user.emailEnabled,
-                smsEnabled: user.smsEnabled,
-                createdAt: user.createdAt.toISOString(),
-                updatedAt: user.updatedAt.toISOString(),
-            },
+            user: this.mapUserResponse(user),
             tokens: {
                 accessToken: token,
             },
@@ -65,29 +52,22 @@ export class AuthService {
             throw new AppError('Invalid email or password', 401)
         }
 
-        // For demo purposes, we'll accept any password for now
-        // In production, you'd verify the hashed password
-        // const isPasswordValid = await bcrypt.compare(data.password, user.password)
-        // if (!isPasswordValid) {
-        //   throw new AppError('Invalid email or password', 401)
-        // }
+        // Verify password if it exists
+        if (user.password) {
+            const isPasswordValid = await bcrypt.compare(data.password, user.password)
+            if (!isPasswordValid) {
+                throw new AppError('Invalid email or password', 401)
+            }
+        } else {
+            // Fallback for old demo users (optional: force reset later)
+            // For now, allow login if no password set (demo mode)
+        }
 
         // Generate JWT token
         const token = this.generateToken(user.id)
 
         return {
-            user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                phone: user.phone,
-                avatarUrl: user.avatarUrl,
-                pushEnabled: user.pushEnabled,
-                emailEnabled: user.emailEnabled,
-                smsEnabled: user.smsEnabled,
-                createdAt: user.createdAt.toISOString(),
-                updatedAt: user.updatedAt.toISOString(),
-            },
+            user: this.mapUserResponse(user),
             tokens: {
                 accessToken: token,
             },
@@ -103,18 +83,7 @@ export class AuthService {
             throw new AppError('User not found', 404)
         }
 
-        return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            phone: user.phone,
-            avatarUrl: user.avatarUrl,
-            pushEnabled: user.pushEnabled,
-            emailEnabled: user.emailEnabled,
-            smsEnabled: user.smsEnabled,
-            createdAt: user.createdAt.toISOString(),
-            updatedAt: user.updatedAt.toISOString(),
-        }
+        return this.mapUserResponse(user)
     }
 
     async updateProfile(userId: string, data: UpdateProfileInput) {
@@ -127,18 +96,7 @@ export class AuthService {
             },
         })
 
-        return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            phone: user.phone,
-            avatarUrl: user.avatarUrl,
-            pushEnabled: user.pushEnabled,
-            emailEnabled: user.emailEnabled,
-            smsEnabled: user.smsEnabled,
-            createdAt: user.createdAt.toISOString(),
-            updatedAt: user.updatedAt.toISOString(),
-        }
+        return this.mapUserResponse(user)
     }
 
     async updatePreferences(userId: string, data: UpdatePreferencesInput) {
@@ -151,6 +109,51 @@ export class AuthService {
             },
         })
 
+        return this.mapUserResponse(user)
+    }
+
+    async updatePassword(userId: string, data: UpdatePasswordInput) {
+        const user = await prisma.user.findUnique({ where: { id: userId } })
+        if (!user) throw new AppError('User not found', 404)
+
+        // Verify old password
+        if (user.password) {
+            const isValid = await bcrypt.compare(data.oldPassword, user.password)
+            if (!isValid) throw new AppError('Incorrect old password', 400)
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(data.newPassword, 10)
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword }
+        })
+
+        return this.mapUserResponse(updatedUser)
+    }
+
+    async updateEmail(userId: string, data: UpdateEmailInput) {
+        const existingUser = await prisma.user.findUnique({ where: { email: data.email } })
+        if (existingUser) throw new AppError('Email already in use', 400)
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { email: data.email }
+        })
+
+        return this.mapUserResponse(updatedUser)
+    }
+
+    private generateToken(userId: string): string {
+        return jwt.sign(
+            { userId },
+            process.env.JWT_SECRET || 'default-secret-key',
+            { expiresIn: '7d' }
+        )
+    }
+
+    private mapUserResponse(user: any) {
         return {
             id: user.id,
             email: user.email,
@@ -163,14 +166,6 @@ export class AuthService {
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt.toISOString(),
         }
-    }
-
-    private generateToken(userId: string): string {
-        return jwt.sign(
-            { userId },
-            process.env.JWT_SECRET || 'default-secret-key',
-            { expiresIn: '7d' }
-        )
     }
 }
 

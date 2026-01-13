@@ -12,5 +12,7 @@ router.post('/login', authController.login.bind(authController))
 router.get('/me', authMiddleware, authController.getCurrentUser.bind(authController))
 router.patch('/profile', authMiddleware, authController.updateProfile.bind(authController))
 router.patch('/preferences', authMiddleware, authController.updatePreferences.bind(authController))
+router.put('/update-password', authMiddleware, authController.updatePassword.bind(authController))
+router.put('/update-email', authMiddleware, authController.updateEmail.bind(authController))
 
 export default router

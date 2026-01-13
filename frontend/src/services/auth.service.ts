@@ -35,4 +35,14 @@ export const authService = {
         const response = await api.patch('/auth/preferences', preferences)
         return response.data
     },
+
+    async updatePassword(data: any): Promise<User> {
+        const response = await api.put('/auth/update-password', data)
+        return response.data
+    },
+
+    async updateEmail(data: { email: string }): Promise<User> {
+        const response = await api.put('/auth/update-email', data)
+        return response.data
+    },
 }

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import Button from '../ui/Button'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, User, Home } from 'lucide-react'
 import NotificationBell from '../notifications/NotificationBell'
 
 export default function Header() {
@@ -26,14 +26,30 @@ export default function Header() {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('/dashboard')}
+                        className="text-slate-400 hover:text-primary-400"
+                        title="Dashboard"
+                    >
+                        <Home className="w-5 h-5" />
+                    </Button>
+
                     <NotificationBell />
 
                     <div className="hidden md:flex items-center gap-3 pl-4 border-l border-slate-800">
-                        <div className="text-right">
+                        <div
+                            className="text-right cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => navigate('/profile')}
+                        >
                             <p className="text-sm font-medium text-slate-200">{user?.name}</p>
                             <p className="text-xs text-slate-500">{user?.email}</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
+                        <div
+                            className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary-500 hover:ring-offset-2 hover:ring-offset-slate-900 transition-all"
+                            onClick={() => navigate('/profile')}
+                        >
                             {user?.avatarUrl ? (
                                 <img src={user.avatarUrl} alt={user.name} className="w-full h-full rounded-full" />
                             ) : (
@@ -45,6 +61,7 @@ export default function Header() {
                             size="sm"
                             onClick={handleLogout}
                             className="text-slate-400 hover:text-danger-400"
+                            title="Sign Out"
                         >
                             <LogOut className="w-5 h-5" />
                         </Button>

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { authService } from '../services/auth.service'
-import { signupSchema, loginSchema, updateProfileSchema, updatePreferencesSchema } from '../validators/user.validator'
+import { signupSchema, loginSchema, updateProfileSchema, updatePreferencesSchema, updatePasswordSchema, updateEmailSchema } from '../validators/user.validator'
 import { AuthRequest } from '../middleware/auth.middleware'
 
 export class AuthController {
@@ -48,6 +48,26 @@ export class AuthController {
             const validatedData = updatePreferencesSchema.parse(req.body)
             const user = await authService.updatePreferences(req.userId!, validatedData)
             res.status(200).json(user)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async updatePassword(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const validatedData = updatePasswordSchema.parse(req.body)
+            const result = await authService.updatePassword(req.userId!, validatedData)
+            res.status(200).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async updateEmail(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const validatedData = updateEmailSchema.parse(req.body)
+            const result = await authService.updateEmail(req.userId!, validatedData)
+            res.status(200).json(result)
         } catch (error) {
             next(error)
         }
