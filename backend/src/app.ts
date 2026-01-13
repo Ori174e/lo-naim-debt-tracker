@@ -15,14 +15,25 @@ dotenv.config()
 const app: Express = express()
 
 // CORS - Emergency configuration
-app.use(cors({
-    origin: ["https://lo-naim-debt-tracker.vercel.app"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 200,
-}))
-app.options('*', cors())
+// CORS - Emergency configuration (Manual Headers)
+app.use((req, res, next) => {
+    const allowedOrigin = "https://lo-naim-debt-tracker.vercel.app";
+    const origin = req.headers.origin;
+
+    if (origin === allowedOrigin) {
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    }
+
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+
+    if (req.method === "OPTIONS") {
+        res.sendStatus(200);
+        return;
+    }
+    next();
+});
 
 // Security Middleware
 app.use(helmet())
