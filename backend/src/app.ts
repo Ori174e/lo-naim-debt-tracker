@@ -38,6 +38,7 @@ app.use(cors({
         }
     },
     credentials: true,
+    optionsSuccessStatus: 200,
 }))
 
 // Rate Limiting
