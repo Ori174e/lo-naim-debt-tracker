@@ -18,7 +18,7 @@ export const authMiddleware = async (
             throw new AppError('No token provided', 401)
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret-key') as { userId: string }
         req.userId = decoded.userId
 
         next()
