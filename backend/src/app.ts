@@ -14,6 +14,7 @@ import { apiLimiter, authLimiter } from './middleware/rateLimiter'
 dotenv.config()
 
 const app: Express = express()
+app.set('trust proxy', 1)
 
 // CORS - Emergency configuration
 // CORS - Emergency configuration (Manual Headers)
