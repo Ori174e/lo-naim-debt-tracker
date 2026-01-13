@@ -65,13 +65,13 @@ export default function ProfilePage() {
             {/* Header / Banner */}
             <div className="bg-slate-900/50 border-b border-slate-800 pb-8 pt-20 px-4 relative">
                 <Button
-                    variant="secondary"
+                    variant="ghost"
                     size="sm"
-                    className="absolute top-6 left-4 z-50 shadow-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                    className="absolute top-8 left-4 md:left-8 z-50 text-slate-400 hover:text-white hover:bg-white/5 transition-all"
                     onClick={() => navigate('/dashboard')}
                 >
                     <ArrowLeft className="w-5 h-5 mr-2" />
-                    Back to Dashboard
+                    Back
                 </Button>
                 <div className="max-w-xl mx-auto flex flex-col items-center">
                     <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center mb-4 ring-4 ring-slate-800 shadow-xl">

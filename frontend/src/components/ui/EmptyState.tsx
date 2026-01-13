@@ -8,6 +8,7 @@ interface EmptyStateProps {
     description: string
     actionLabel?: string
     onAction?: () => void
+    children?: React.ReactNode
 }
 
 export default function EmptyState({
@@ -15,7 +16,8 @@ export default function EmptyState({
     title,
     description,
     actionLabel,
-    onAction
+    onAction,
+    children
 }: EmptyStateProps) {
     return (
         <motion.div
@@ -34,6 +36,7 @@ export default function EmptyState({
                     {actionLabel}
                 </Button>
             )}
+            {children}
         </motion.div>
     )
 }

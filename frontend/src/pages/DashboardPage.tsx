@@ -82,7 +82,14 @@ export default function DashboardPage() {
                                 description="Start tracking by adding your first debt or connecting with friends."
                                 actionLabel="Create Debt"
                                 onAction={() => navigate('/debts')}
-                            />
+                            >
+                                <div className="mt-4">
+                                    <Button variant="ghost" size="sm" onClick={() => setIsAddFriendOpen(true)}>
+                                        <UserPlus className="w-4 h-4 mr-2" />
+                                        Add Friend
+                                    </Button>
+                                </div>
+                            </EmptyState>
                         )}
                     </>
                 )}
