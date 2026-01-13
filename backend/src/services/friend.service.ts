@@ -190,6 +190,35 @@ export class FriendService {
 
         return { message: 'Friend removed' }
     }
+    async searchUsers(currentUserId: string, query: string) {
+        if (!query || query.length < 2) return []
+
+        const users = await prisma.user.findMany({
+            where: {
+                AND: [
+                    { id: { not: currentUserId } },
+                    {
+                        OR: [
+                            { email: { contains: query, mode: 'insensitive' } },
+                            { name: { contains: query, mode: 'insensitive' } },
+                            { phone: { contains: query, mode: 'insensitive' } },
+                        ],
+                    },
+                ],
+            },
+            take: 10,
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                avatarUrl: true,
+            },
+        })
+
+        // Enhancement: Check friendship status for each user could be done here
+        // For now, returning raw users is sufficient for the MVP search
+        return users
+    }
 }
 
 export const friendService = new FriendService()

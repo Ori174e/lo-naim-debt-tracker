@@ -37,6 +37,20 @@ export class FriendController {
         }
     }
 
+    async searchUsers(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const { q } = req.query
+            if (typeof q !== 'string') {
+                res.status(400).json({ message: 'Search query required' })
+                return
+            }
+            const results = await friendService.searchUsers(req.userId!, q)
+            res.json(results)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async respondToRequest(req: AuthRequest, res: Response, next: NextFunction) {
         try {
             const { id } = req.params as { id: string }

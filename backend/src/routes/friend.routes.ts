@@ -12,6 +12,9 @@ router.get('/', friendController.getFriends.bind(friendController))
 // GET /api/friends/requests - Get pending requests (sent & received)
 router.get('/requests', friendController.getRequests.bind(friendController))
 
+// GET /api/friends/search - Search for users
+router.get('/search', friendController.searchUsers.bind(friendController))
+
 // POST /api/friends/request - Send friend request
 router.post('/request', friendController.sendRequest.bind(friendController))
 

@@ -32,6 +32,11 @@ export const friendService = {
         return response.data
     },
 
+    async searchUsers(query: string): Promise<User[]> {
+        const response = await api.get(`/friends/search?q=${encodeURIComponent(query)}`)
+        return response.data
+    },
+
     async removeFriend(friendId: string): Promise<{ message: string }> {
         const response = await api.delete(`/friends/${friendId}`)
         return response.data
