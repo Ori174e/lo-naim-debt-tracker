@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { authService } from '../services/auth.service'
-import { User as UserIcon, Mail, Lock, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { User as UserIcon, Mail, Lock, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 
 export default function ProfilePage() {
+    const navigate = useNavigate()
     const { user, initializeAuth } = useAuthStore()
     const [isLoading, setIsLoading] = useState(false)
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
@@ -61,7 +63,16 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-slate-950 pb-20">
             {/* Header / Banner */}
-            <div className="bg-slate-900/50 border-b border-slate-800 pb-8 pt-20 px-4">
+            <div className="bg-slate-900/50 border-b border-slate-800 pb-8 pt-20 px-4 relative">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute top-4 left-4 text-slate-400 hover:text-white"
+                    onClick={() => navigate(-1)}
+                >
+                    <ArrowLeft className="w-5 h-5 mr-2" />
+                    Back
+                </Button>
                 <div className="max-w-xl mx-auto flex flex-col items-center">
                     <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center mb-4 ring-4 ring-slate-800 shadow-xl">
                         {user?.avatarUrl ? (
