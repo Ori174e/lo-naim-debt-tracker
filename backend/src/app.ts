@@ -16,20 +16,19 @@ const app: Express = express()
 
 // CORS - Emergency configuration
 // CORS - Emergency configuration (Manual Headers)
+// CORS - Emergency configuration (Mirror Strategy)
 app.use((req: Request, res: Response, next: NextFunction) => {
-    const allowedOrigin = "https://lo-naim-debt-tracker.vercel.app";
-    const origin = req.headers.origin;
+    // mirror the request origin, or fall back to the vercel app
+    const origin = req.headers.origin || "https://lo-naim-debt-tracker.vercel.app";
 
-    if (origin === allowedOrigin) {
-        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-    }
-
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.setHeader("Access-Control-Allow-Credentials", "true");
 
+    // Handle Preflight immediately
     if (req.method === "OPTIONS") {
-        res.sendStatus(200);
+        res.status(200).end();
         return;
     }
     next();
