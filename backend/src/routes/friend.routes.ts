@@ -19,7 +19,8 @@ router.get('/search', friendController.searchUsers.bind(friendController))
 router.post('/request', friendController.sendRequest.bind(friendController))
 
 // PATCH /api/friends/request/:id/respond - Accept/Reject request
-router.patch('/request/:id/respond', friendController.respondToRequest.bind(friendController))
+router.post('/requests/:requestId/respond', friendController.respondToRequest.bind(friendController))
+router.post('/requests/respond-by-sender', friendController.respondBySender.bind(friendController))
 
 // DELETE /api/friends/:id - Remove friend (id is the friend's userId)
 router.delete('/:id', friendController.removeFriend.bind(friendController))

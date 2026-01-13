@@ -2,19 +2,40 @@ import { useRef, useEffect } from 'react'
 import { useNotificationStore } from '../../store/notificationStore'
 import { formatRelativeTime } from '../../utils/formatDate'
 import { NotificationType } from '../../types/notification.types'
-import { Bell, DollarSign, UserPlus, CheckCircle, CreditCard } from 'lucide-react'
-
-
+import { Bell, DollarSign, UserPlus, CheckCircle, CreditCard, Check, X } from 'lucide-react'
+import { friendService } from '../../services/friend.service'
+import Button from '../ui/Button'
+import { useFriendStore } from '../../store/friendStore'
 
 export default function NotificationList() {
     const { notifications, isLoading, markAsRead, markAllAsRead, fetchNotifications } = useNotificationStore()
+    const { fetchFriends } = useFriendStore()
     const listRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         fetchNotifications()
     }, [])
 
+    const handleAcceptFriend = async (senderId: string, notificationId: string, e: React.MouseEvent) => {
+        e.stopPropagation()
+        try {
+            await friendService.respondToRequest(senderId, 'ACCEPTED')
+            await markAsRead(notificationId)
+            fetchFriends() // Refresh friend list
+        } catch (error) {
+            console.error('Failed to accept friend request', error)
+        }
+    }
 
+    const handleDeclineFriend = async (senderId: string, notificationId: string, e: React.MouseEvent) => {
+        e.stopPropagation()
+        try {
+            await friendService.respondToRequest(senderId, 'REJECTED')
+            await markAsRead(notificationId)
+        } catch (error) {
+            console.error('Failed to decline friend request', error)
+        }
+    }
 
     const getIcon = (type: NotificationType) => {
         switch (type) {
@@ -83,6 +104,27 @@ export default function NotificationList() {
                                 <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">
                                     {notification.message}
                                 </p>
+                                {notification.type === NotificationType.FRIEND_REQUEST && !notification.read && notification.senderId && (
+                                    <div className="flex gap-2 mt-3">
+                                        <Button
+                                            size="sm"
+                                            className="px-3 py-1 h-7 text-xs"
+                                            onClick={(e) => handleAcceptFriend(notification.senderId!, notification.id, e)}
+                                        >
+                                            <Check className="w-3 h-3 mr-1" />
+                                            Accept
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            className="px-3 py-1 h-7 text-xs bg-slate-700 hover:bg-slate-600 border-none"
+                                            onClick={(e) => handleDeclineFriend(notification.senderId!, notification.id, e)}
+                                        >
+                                            <X className="w-3 h-3 mr-1" />
+                                            Decline
+                                        </Button>
+                                    </div>
+                                )}
                                 <p className="text-[10px] text-slate-500 mt-2">
                                     {formatRelativeTime(notification.createdAt)}
                                 </p>

@@ -33,8 +33,12 @@ export const friendService = {
     },
 
     async searchUsers(query: string): Promise<User[]> {
-        const response = await api.get(`/friends/search?q=${encodeURIComponent(query)}`)
+        const response = await api.get('/friends/search', { params: { query } })
         return response.data
+    },
+
+    async respondToRequest(senderId: string, status: 'ACCEPTED' | 'REJECTED'): Promise<void> {
+        await api.post('/friends/requests/respond-by-sender', { senderId, status })
     },
 
     async removeFriend(friendId: string): Promise<{ message: string }> {
