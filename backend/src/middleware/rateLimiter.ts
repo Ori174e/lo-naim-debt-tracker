@@ -10,10 +10,11 @@ export const apiLimiter = rateLimit({
 })
 
 // Strict limiter for Auth routes (Login/Signup) - 5 attempts per hour
+// Strict limiter for Auth routes (Login/Signup) - Relaxed for testing
 export const authLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    limit: 5,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // Increased from 5 to 100 for testing
     standardHeaders: 'draft-7',
     legacyHeaders: false,
-    message: 'Too many login attempts, please try again after an hour.'
+    message: 'Too many login attempts, please try again later.'
 })
