@@ -1,5 +1,5 @@
-import express, { Express, Request, Response } from 'express'
-import cors from 'cors'
+import express, { Express, Request, Response, NextFunction } from 'express'
+
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes'
 import debtRoutes from './routes/debt.routes'
@@ -16,7 +16,7 @@ const app: Express = express()
 
 // CORS - Emergency configuration
 // CORS - Emergency configuration (Manual Headers)
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     const allowedOrigin = "https://lo-naim-debt-tracker.vercel.app";
     const origin = req.headers.origin;
 
