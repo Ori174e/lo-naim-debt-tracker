@@ -16,8 +16,10 @@ const app: Express = express()
 
 // CORS - Emergency configuration
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: ["https://lo-naim-debt-tracker.vercel.app"],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200,
 }))
 app.options('*', cors())
