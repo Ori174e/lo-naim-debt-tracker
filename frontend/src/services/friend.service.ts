@@ -28,7 +28,7 @@ export const friendService = {
     },
 
     async respondToRequest(requestId: string, status: 'ACCEPTED' | 'REJECTED'): Promise<FriendRequest> {
-        const response = await api.patch(`/friends/request/${requestId}/respond`, { status })
+        const response = await api.post(`/friends/requests/${requestId}/respond`, { status })
         return response.data
     },
 

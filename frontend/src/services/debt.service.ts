@@ -9,7 +9,12 @@ interface DebtsResponse {
 
 export const debtService = {
     async createDebt(data: CreateDebtData): Promise<Debt> {
-        const response = await api.post('/debts', data)
+        const payload = {
+            ...data,
+            originalAmount: typeof data.originalAmount === 'string' ? parseFloat(data.originalAmount) : data.originalAmount,
+            dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : new Date().toISOString()
+        }
+        const response = await api.post('/debts', payload)
         return response.data
     },
 
