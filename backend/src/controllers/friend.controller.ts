@@ -9,7 +9,7 @@ const sendRequestSchema = z.object({
 })
 
 export class FriendController {
-    async getFriends(req: AuthRequest, res: Response, next: NextFunction) {
+    getFriends = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const friends = await friendService.getFriends(req.userId!)
             res.json(friends)
@@ -18,7 +18,7 @@ export class FriendController {
         }
     }
 
-    async getRequests(req: AuthRequest, res: Response, next: NextFunction) {
+    getRequests = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const requests = await friendService.getPendingRequests(req.userId!)
             res.json(requests)
@@ -27,7 +27,7 @@ export class FriendController {
         }
     }
 
-    async sendRequest(req: AuthRequest, res: Response, next: NextFunction) {
+    sendRequest = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const { email } = sendRequestSchema.parse(req.body)
             const result = await friendService.sendRequest(req.userId!, email)
@@ -37,7 +37,7 @@ export class FriendController {
         }
     }
 
-    async searchUsers(req: AuthRequest, res: Response, next: NextFunction) {
+    searchUsers = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const { q } = req.query
             if (typeof q !== 'string') {
@@ -51,7 +51,7 @@ export class FriendController {
         }
     }
 
-    async respondToRequest(req: AuthRequest, res: Response, next: NextFunction) {
+    respondToRequest = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params as { id: string }
             const { status } = req.body // EXPECTS { status: 'ACCEPTED' | 'REJECTED' }
@@ -68,7 +68,7 @@ export class FriendController {
         }
     }
 
-    async removeFriend(req: AuthRequest, res: Response, next: NextFunction) {
+    removeFriend = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params as { id: string } // This is the FRIEND'S user ID, not the friendship ID for convenience
             const result = await friendService.removeFriend(req.userId!, id)
@@ -77,7 +77,8 @@ export class FriendController {
             next(error)
         }
     }
-    async respondToRequestBySender(req: AuthRequest, res: Response, next: NextFunction) {
+
+    respondToRequestBySender = async (req: AuthRequest, res: Response, next: NextFunction) => {
         console.log("🚀 ROUTE HIT: respondToRequestBySender called");
         console.log("Payload received:", req.body);
         console.log("User ID (Receiver):", req.userId);

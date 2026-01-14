@@ -17,6 +17,22 @@ async function startServer() {
         console.log('✅ Redis connected')
 
         // Start server
+        // DEBUG: Print all registered routes
+        console.log("Registered Routes:");
+        app._router.stack.forEach((r: any) => {
+            if (r.route && r.route.path) {
+                console.log(`[${Object.keys(r.route.methods).join(',').toUpperCase()}] ${r.route.path}`);
+            } else if (r.name === 'router') {
+                // Loop through nested routers (like /api/friends)
+                r.handle.stack.forEach((handler: any) => {
+                    if (handler.route && handler.route.path) {
+                        const method = Object.keys(handler.route.methods).join(',').toUpperCase();
+                        console.log(`[${method}] (Nested) ${handler.route.path}`);
+                    }
+                });
+            }
+        });
+
         app.listen(Number(PORT), '0.0.0.0', () => {
             console.log(`🚀 Server running on port ${PORT}`)
             console.log(`📡 API available at http://0.0.0.0:${PORT}/api`)
