@@ -6,6 +6,7 @@ import DebtsPage from './pages/DebtsPage'
 import FriendsPage from './pages/FriendsPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import NotificationsPage from './pages/NotificationsPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import { useEffect } from 'react'
 
@@ -65,6 +66,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <SettingsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/notifications"
+                    element={
+                        <ProtectedRoute>
+                            <NotificationsPage />
                         </ProtectedRoute>
                     }
                 />
