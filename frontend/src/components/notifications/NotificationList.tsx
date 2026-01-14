@@ -19,7 +19,7 @@ export default function NotificationList() {
     const handleAcceptFriend = async (senderId: string, notificationId: string, e: React.MouseEvent) => {
         e.stopPropagation()
         try {
-            await friendService.respondToRequest(senderId, 'ACCEPTED')
+            await friendService.respondToRequestBySender(senderId, 'ACCEPTED')
             await markAsRead(notificationId)
             fetchFriends() // Refresh friend list
         } catch (error) {
@@ -30,7 +30,7 @@ export default function NotificationList() {
     const handleDeclineFriend = async (senderId: string, notificationId: string, e: React.MouseEvent) => {
         e.stopPropagation()
         try {
-            await friendService.respondToRequest(senderId, 'REJECTED')
+            await friendService.respondToRequestBySender(senderId, 'REJECTED')
             await markAsRead(notificationId)
         } catch (error) {
             console.error('Failed to decline friend request', error)

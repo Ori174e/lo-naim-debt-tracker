@@ -10,6 +10,7 @@ export interface UserNotification {
     data?: any
     createdAt: string
     openedAt?: string
+    senderId?: string
 }
 
 export const notificationService = {

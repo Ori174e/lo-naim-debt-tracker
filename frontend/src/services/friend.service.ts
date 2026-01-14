@@ -37,7 +37,7 @@ export const friendService = {
         return response.data
     },
 
-    async respondToRequest(senderId: string, status: 'ACCEPTED' | 'REJECTED'): Promise<void> {
+    async respondToRequestBySender(senderId: string, status: 'ACCEPTED' | 'REJECTED'): Promise<void> {
         await api.post('/friends/requests/respond-by-sender', { senderId, status })
     },
 
