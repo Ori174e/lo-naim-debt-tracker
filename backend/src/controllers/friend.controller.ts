@@ -112,6 +112,18 @@ export class FriendController {
         // Check if already handled
         if (friendship.status === 'ACCEPTED') {
             console.log("⚠️ Friendship already accepted. Marking notification as handled.");
+
+            // CLEANUP: Mark the friend request notification as read
+            await prisma.notification.updateMany({
+                where: {
+                    recipientId: req.userId,
+                    type: 'FRIEND_REQUEST',
+                    senderId: senderId,
+                    openedAt: null
+                },
+                data: { openedAt: new Date() }
+            });
+
             return res.json({ message: "Already accepted", status: "ACCEPTED" });
         }
 
@@ -124,6 +136,17 @@ export class FriendController {
         const updated = await prisma.friendship.update({
             where: { id: friendship.id },
             data: { status: 'ACCEPTED' }
+        });
+
+        // CLEANUP: Mark the friend request notification as read
+        await prisma.notification.updateMany({
+            where: {
+                recipientId: req.userId,
+                type: 'FRIEND_REQUEST',
+                senderId: senderId,
+                openedAt: null
+            },
+            data: { openedAt: new Date() }
         });
 
         return res.json(updated);
