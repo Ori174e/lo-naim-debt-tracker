@@ -109,6 +109,12 @@ export class FriendController {
 
         console.log("✅ FOUND Friendship:", friendship);
 
+        // Check if already handled
+        if (friendship.status === 'ACCEPTED') {
+            console.log("⚠️ Friendship already accepted. Marking notification as handled.");
+            return res.json({ message: "Already accepted", status: "ACCEPTED" });
+        }
+
         // 4. Update it
         if (status === 'REJECTED') {
             await prisma.friendship.delete({ where: { id: friendship.id } });
