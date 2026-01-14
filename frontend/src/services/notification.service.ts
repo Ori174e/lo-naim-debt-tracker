@@ -8,7 +8,7 @@ export interface UserNotification {
     message: string
     read: boolean
     data?: any
-    createdAt: string
+    sentAt: string
     openedAt?: string
     senderId?: string
 }

@@ -33,6 +33,7 @@ export default function NotificationList({ mode = 'dropdown', onClose }: Notific
 
     const handleAcceptFriend = async (senderId: string, notificationId: string, e: React.MouseEvent) => {
         e.stopPropagation()
+        console.log('Accepting request:', { senderId, notificationId })
         try {
             await friendService.respondToRequestBySender(senderId, 'ACCEPTED')
             await markAsRead(notificationId)
@@ -45,6 +46,7 @@ export default function NotificationList({ mode = 'dropdown', onClose }: Notific
 
     const handleDeclineFriend = async (senderId: string, notificationId: string, e: React.MouseEvent) => {
         e.stopPropagation()
+        console.log('Declining request:', { senderId, notificationId })
         try {
             await friendService.respondToRequestBySender(senderId, 'REJECTED')
             await markAsRead(notificationId)
@@ -155,7 +157,7 @@ export default function NotificationList({ mode = 'dropdown', onClose }: Notific
                                     </div>
                                 )}
                                 <p className="text-[10px] text-slate-400 mt-2">
-                                    {formatRelativeTime(notification.createdAt)}
+                                    {formatRelativeTime(notification.sentAt)}
                                 </p>
                             </div>
                             {!notification.read && (
