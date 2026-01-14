@@ -8,6 +8,9 @@ const sendRequestSchema = z.object({
     email: z.string().email(),
 })
 
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
 export class FriendController {
     getFriends = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
@@ -79,16 +82,45 @@ export class FriendController {
     }
 
     respondToRequestBySender = async (req: AuthRequest, res: Response, next: NextFunction) => {
-        console.log("🚀 ROUTE HIT: respondToRequestBySender called");
-        console.log("Payload received:", req.body);
-        console.log("User ID (Receiver):", req.userId);
-        try {
-            const { senderId, status } = req.body
-            const result = await friendService.respondToRequestBySender(req.userId!, senderId, status)
-            res.json(result)
-        } catch (error) {
-            next(error)
+        const { senderId, status } = req.body
+        console.log(`🕵️ Looking for friendship: Sender=${senderId}, Receiver=${req.userId}`);
+
+        // 2. Dump ALL friendships for this user (to see what exists)
+        const allFriendships = await prisma.friendship.findMany({
+            where: {
+                OR: [
+                    { user1Id: req.userId },
+                    { user2Id: req.userId }
+                ]
+            }
+        });
+        console.log("📊 DB DUMP (User's Friendships):", JSON.stringify(allFriendships, null, 2));
+
+        // 3. Try to find the record (Loose Search - ignoring status)
+        let friendship = allFriendships.find(f =>
+            (f.user1Id === senderId && f.user2Id === req.userId) ||
+            (f.user1Id === req.userId && f.user2Id === senderId) // Check reverse direction too
+        );
+
+        if (!friendship) {
+            console.error("❌ STILL NOT FOUND after loose search.");
+            return res.status(404).json({ message: "Friendship record not found (Ghost Notification)" });
         }
+
+        console.log("✅ FOUND Friendship:", friendship);
+
+        // 4. Update it
+        if (status === 'REJECTED') {
+            await prisma.friendship.delete({ where: { id: friendship.id } });
+            return res.json({ message: 'Request rejected' });
+        }
+
+        const updated = await prisma.friendship.update({
+            where: { id: friendship.id },
+            data: { status: 'ACCEPTED' }
+        });
+
+        return res.json(updated);
     }
 }
 
