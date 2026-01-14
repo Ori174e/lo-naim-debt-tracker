@@ -120,6 +120,22 @@ export class FriendService {
         return updated
     }
 
+    async respondToRequestBySender(userId: string, senderId: string, status: 'ACCEPTED' | 'REJECTED') {
+        const friendship = await prisma.friendship.findFirst({
+            where: {
+                user1Id: senderId,
+                user2Id: userId,
+                status: 'PENDING',
+            },
+        })
+
+        if (!friendship) {
+            throw new AppError('Friend request not found', 404)
+        }
+
+        return this.respondToRequest(userId, friendship.id, status)
+    }
+
     async getFriends(userId: string) {
         const friendships = await prisma.friendship.findMany({
             where: {
