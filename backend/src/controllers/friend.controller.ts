@@ -81,7 +81,7 @@ export class FriendController {
         }
     }
 
-    respondToRequestBySender = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    respondToRequestBySender = async (req: AuthRequest, res: Response) => {
         const { senderId, status } = req.body
         console.log(`🕵️ Looking for friendship: Sender=${senderId}, Receiver=${req.userId}`);
 
