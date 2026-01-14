@@ -33,7 +33,7 @@ export const friendService = {
     },
 
     async searchUsers(query: string): Promise<User[]> {
-        const response = await api.get('/friends/search', { params: { query } })
+        const response = await api.get('/friends/search', { params: { q: query } })
         return response.data
     },
 
