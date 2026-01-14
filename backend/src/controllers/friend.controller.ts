@@ -78,6 +78,9 @@ export class FriendController {
         }
     }
     async respondToRequestBySender(req: AuthRequest, res: Response, next: NextFunction) {
+        console.log("🚀 ROUTE HIT: respondToRequestBySender called");
+        console.log("Payload received:", req.body);
+        console.log("User ID (Receiver):", req.userId);
         try {
             const { senderId, status } = req.body
             const result = await friendService.respondToRequestBySender(req.userId!, senderId, status)

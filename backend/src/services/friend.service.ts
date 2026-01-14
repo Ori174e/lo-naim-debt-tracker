@@ -121,6 +121,7 @@ export class FriendService {
     }
 
     async respondToRequestBySender(userId: string, senderId: string, status: 'ACCEPTED' | 'REJECTED') {
+        console.log(`🔍 Searching for pending friendship between Sender: ${senderId} and Receiver: ${userId}`);
         const friendship = await prisma.friendship.findFirst({
             where: {
                 user1Id: senderId,
@@ -130,6 +131,13 @@ export class FriendService {
         })
 
         if (!friendship) {
+            console.error("❌ Friendship NOT FOUND in DB. Returning 404.");
+            // Also try reverse lookup for debugging purposes
+            const reverse = await prisma.friendship.findFirst({
+                where: { user1Id: userId, user2Id: senderId, status: 'PENDING' }
+            });
+            if (reverse) console.log("Found reverse pending request (User -> Sender).");
+
             throw new AppError('Friend request not found', 404)
         }
 
