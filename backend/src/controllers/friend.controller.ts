@@ -77,7 +77,7 @@ export class FriendController {
             next(error)
         }
     }
-    async respondBySender(req: AuthRequest, res: Response, next: NextFunction) {
+    async respondToRequestBySender(req: AuthRequest, res: Response, next: NextFunction) {
         try {
             const { senderId, status } = req.body
             const result = await friendService.respondToRequestBySender(req.userId!, senderId, status)
